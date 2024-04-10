@@ -17,6 +17,10 @@ public class SoftwarePicoApplication {
         SpringApplication.run(SoftwarePicoApplication.class, args);
     }
 
-    public static final String uuid = UUID.randomUUID().toString();
+    private static final String uuid = UUID.randomUUID().toString();
+
+    public static String getUuid(){
+        return uuid;
+    }
 
 }

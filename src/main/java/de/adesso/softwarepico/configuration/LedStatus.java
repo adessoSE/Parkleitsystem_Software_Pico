@@ -1,4 +1,4 @@
-package de.adesso.softwarepico;
+package de.adesso.softwarepico.configuration;
 
 public enum LedStatus {
 

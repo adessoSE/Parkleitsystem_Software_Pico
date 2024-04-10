@@ -4,13 +4,18 @@ import java.util.List;
 
 public class HardwarePicoUtils {
 
-    public static boolean idAlreadyInList(List<String> hardwarePicoUris, String hardwarePicoUri){
-        for(String uri : hardwarePicoUris){
-            if(uri.split("/")[0].equals(hardwarePicoUri.split("/")[0])){
-                return true;
-            }
+    public static int hpIdFromUri(String uri){
+        if(uri.contains("/")) {
+            return Integer.parseInt(uri.split("/")[0]);
         }
-        return false;
+        return -1;
+    }
+
+    public static String hpIpFromUri(String uri){
+        if(uri.contains("/")){
+            return uri.split("/")[1];
+        }
+        return "....";
     }
 
 }

@@ -1,13 +1,17 @@
 package de.adesso.softwarepico.communication.hardware;
 
+import de.adesso.softwarepico.communication.hardware.errorHandling.DidNotRespondException;
+import io.reactivex.exceptions.UndeliverableException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -26,11 +30,19 @@ public class HttpSender implements HardwareSender{
     @Override
     public void send(String uri, JSONObject j) {
         HttpEntity<String> requestEntity = new HttpEntity<>(j.toString(), httpHeaders);
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(buildUrl(uri), requestEntity, String.class);
-        logger.info("[Send Http-Message with response code: " + responseEntity.getStatusCode() + "] : [Request=" + j.get("messageType") + "]");
+        try {
+            restTemplate.postForEntity(buildUrl(uri), requestEntity, String.class);
+        }
+        catch (HttpServerErrorException e){
+            if(j.getString("messageType").equals("heartbeat") && j.getInt("important") == 1){
+                throw new DidNotRespondException();
+            }
+        }
+        catch (Exception ignore){}
     }
 
     private String buildUrl(String uri){
         return "http://" + uri + ":80/pico";
     }
+
 }
