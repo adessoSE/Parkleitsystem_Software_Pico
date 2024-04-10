@@ -1,4 +1,4 @@
-package de.adesso.softwarepico.configuration;
+package de.adesso.communication.cloud;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

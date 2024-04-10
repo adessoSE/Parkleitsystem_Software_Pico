@@ -1,9 +1,8 @@
 package de.adesso.softwarepico.service.mirror;
 
-import de.adesso.softwarepico.communication.hardware.errorHandling.DidNotRespondException;
+import de.adesso.communication.hardware.errorHandling.DidNotRespondException;
 import de.adesso.softwarepico.configuration.SensorStatus;
 import de.adesso.softwarepico.service.SendingService;
-import de.adesso.softwarepico.service.mirror.SoftwareRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

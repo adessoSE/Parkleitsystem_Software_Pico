@@ -1,6 +1,5 @@
-package de.adesso.softwarepico.communication.cloud;
+package de.adesso.communication.cloud;
 
-import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
 import org.json.JSONObject;

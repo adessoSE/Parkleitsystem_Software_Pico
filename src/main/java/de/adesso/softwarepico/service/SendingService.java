@@ -1,8 +1,8 @@
 package de.adesso.softwarepico.service;
 
 import de.adesso.softwarepico.SoftwarePicoApplication;
-import de.adesso.softwarepico.communication.cloud.CloudSender;
-import de.adesso.softwarepico.communication.hardware.HardwareSender;
+import de.adesso.communication.cloud.CloudSender;
+import de.adesso.communication.hardware.HardwareSender;
 import de.adesso.softwarepico.configuration.LedStatus;
 import jakarta.annotation.PostConstruct;
 import org.json.JSONObject;
@@ -46,7 +46,7 @@ public class SendingService {
     }
 
     public void sendResponse(String uri, String messageId, String status){
-        JSONObject response = new JSONObject().put("messageType", "statusResponse").put("messageId", messageId).put("status", status);
+        JSONObject response = new JSONObject().put("messageType", "status_response").put("messageId", messageId).put("status", status);
         cloudSender.send(uri, response);
     }
 

@@ -1,4 +1,4 @@
-package de.adesso.softwarepico.communication;
+package de.adesso.communication;
 
 import org.json.JSONObject;
 

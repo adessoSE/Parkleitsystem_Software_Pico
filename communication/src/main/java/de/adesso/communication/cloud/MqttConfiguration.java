@@ -1,15 +1,16 @@
-package de.adesso.softwarepico.communication.cloud;
+package de.adesso.communication.cloud;
 
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
-import de.adesso.softwarepico.configuration.MqttProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.UUID;
 
 @Configuration
+@EnableConfigurationProperties(MqttProperties.class)
 public class MqttConfiguration {
 
     @Bean

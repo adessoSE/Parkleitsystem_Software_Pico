@@ -1,11 +1,9 @@
 package de.adesso.softwarepico.service.mirror;
 
-import de.adesso.softwarepico.communication.hardware.errorHandling.DidNotRespondException;
+import de.adesso.communication.hardware.errorHandling.DidNotRespondException;
 import de.adesso.softwarepico.configuration.LedStatus;
 import de.adesso.softwarepico.configuration.SensorStatus;
 import de.adesso.softwarepico.service.SendingService;
-import de.adesso.softwarepico.service.mirror.MirrorService;
-import de.adesso.softwarepico.service.mirror.SoftwareRepresentation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package de.adesso.softwarepico.service;
 
 import de.adesso.softwarepico.SoftwarePicoApplication;
-import de.adesso.softwarepico.communication.Receiver;
+import de.adesso.communication.Receiver;
 import de.adesso.softwarepico.messageHandling.MessageFactory;
 import de.adesso.softwarepico.messageHandling.handler.MessageHandler;
 import de.adesso.softwarepico.messageHandling.message.Message;

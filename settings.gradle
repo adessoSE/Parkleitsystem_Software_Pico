@@ -1,1 +1,3 @@
 rootProject.name = 'Software-Pico'
+
+include 'communication'

@@ -1,4 +1,4 @@
-package de.adesso.softwarepico.communication.hardware;
+package de.adesso.communication.hardware;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpStatusCode;
