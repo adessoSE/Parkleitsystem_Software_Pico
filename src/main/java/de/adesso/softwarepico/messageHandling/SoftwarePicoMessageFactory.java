@@ -1,16 +1,24 @@
 package de.adesso.softwarepico.messageHandling;
 
+import de.adesso.communication.messageHandling.Message;
+import de.adesso.communication.messageHandling.MessageFactory;
+import de.adesso.communication.messageHandling.error.JsonMessageNotSupportedException;
 import de.adesso.softwarepico.messageHandling.message.*;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 import static de.adesso.softwarepico.configuration.HardwarePicoUtils.hpIdFromUri;
 import static de.adesso.softwarepico.configuration.HardwarePicoUtils.hpIpFromUri;
 
-public class MessageFactory {
+@Service
+public class SoftwarePicoMessageFactory implements MessageFactory {
 
-    public static Message fromJson(JSONObject jsonMessage){
-        MessageType messageType = MessageType.valueOf(jsonMessage.getString("messageType").toUpperCase());
-        return switch(messageType){
+    @Override
+    public Message fromJson(JSONObject jsonMessage) throws JsonMessageNotSupportedException {
+        SoftwarePicoMessageType softwarePicoMessageType = SoftwarePicoMessageType.valueOf(jsonMessage.getString("messageType").toUpperCase());
+        return switch(softwarePicoMessageType){
             case BIND -> {
                 String uri = jsonMessage.getString("hardwarePicoUri");
                 int picoId = hpIdFromUri(uri);
@@ -43,4 +51,16 @@ public class MessageFactory {
         };
     }
 
+    @Override
+    public boolean supports(JSONObject jsonMessage) {
+        try {
+            return jsonMessage.has("messageType") &&
+                    Arrays.stream(SoftwarePicoMessageType.values()).toList().contains(
+                    SoftwarePicoMessageType.valueOf(jsonMessage.getString("messageType").toUpperCase()));
+        }
+        catch (IllegalArgumentException e){
+            return false;
+        }
+
+    }
 }

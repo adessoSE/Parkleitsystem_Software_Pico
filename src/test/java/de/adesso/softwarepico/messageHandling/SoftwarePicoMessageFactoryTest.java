@@ -1,5 +1,6 @@
 package de.adesso.softwarepico.messageHandling;
 
+import de.adesso.communication.messageHandling.Message;
 import de.adesso.softwarepico.messageHandling.message.*;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class MessageFactoryTest {
+class SoftwarePicoMessageFactoryTest {
 
     @Test
     void fromJsonBind(){
@@ -26,7 +27,7 @@ class MessageFactoryTest {
         when(jsonObjectMock.getString("messageType")).thenReturn("bind");
         when(jsonObjectMock.getString("hardwarePicoUri")).thenReturn(uri);
 
-        Message m = MessageFactory.fromJson(jsonObjectMock);
+        Message m = SoftwarePicoMessageFactory.fromJson(jsonObjectMock);
 
         assertInstanceOf(BindMessage.class, m);
         assertEquals(id, ((BindMessage) m).hardwarePicoId());
@@ -46,7 +47,7 @@ class MessageFactoryTest {
         when(jsonObjectMock.getString("messageType")).thenReturn("rebind");
         when(jsonObjectMock.getString("hardwarePicoUri")).thenReturn(uri);
 
-        Message m = MessageFactory.fromJson(jsonObjectMock);
+        Message m = SoftwarePicoMessageFactory.fromJson(jsonObjectMock);
 
         assertInstanceOf(RebindMessage.class, m);
         assertEquals(ip, ((RebindMessage) m).hardwarePicoIp());
@@ -59,7 +60,7 @@ class MessageFactoryTest {
         JSONObject jsonObjectMock = mock(JSONObject.class);
         when(jsonObjectMock.getString("messageType")).thenReturn("info");
 
-        Message m = MessageFactory.fromJson(jsonObjectMock);
+        Message m = SoftwarePicoMessageFactory.fromJson(jsonObjectMock);
 
         assertInstanceOf(InfoMessage.class, m);
 
@@ -74,7 +75,7 @@ class MessageFactoryTest {
         when(jsonObjectMock.getString("messageType")).thenReturn("sensor_info");
         when(jsonObjectMock.getString("status")).thenReturn(status);
 
-        Message m = MessageFactory.fromJson(jsonObjectMock);
+        Message m = SoftwarePicoMessageFactory.fromJson(jsonObjectMock);
 
         assertInstanceOf(SensorInfoMessage.class, m);
         assertEquals(status, ((SensorInfoMessage) m).status());
@@ -89,7 +90,7 @@ class MessageFactoryTest {
         when(jsonObjectMock.getString("messageType")).thenReturn("heartbeat");
         when(jsonObjectMock.getInt("important")).thenReturn(important);
 
-        Message m = MessageFactory.fromJson(jsonObjectMock);
+        Message m = SoftwarePicoMessageFactory.fromJson(jsonObjectMock);
 
         assertInstanceOf(HeartBeatMessage.class, m);
         assertEquals(important, ((HeartBeatMessage) m).importantFlag());
@@ -107,7 +108,7 @@ class MessageFactoryTest {
         when(jsonObjectMock.getString("source")).thenReturn(sourceTopic);
         when(jsonObjectMock.getString("messageId")).thenReturn(messageId);
 
-        Message m = MessageFactory.fromJson(jsonObjectMock);
+        Message m = SoftwarePicoMessageFactory.fromJson(jsonObjectMock);
 
         assertInstanceOf(GetStatusMessage.class, m);
         assertEquals(sourceTopic, ((GetStatusMessage) m).sourceTopic());
@@ -123,7 +124,7 @@ class MessageFactoryTest {
         when(jsonObjectMock.getString("messageType")).thenReturn("reserve");
         when(jsonObjectMock.getBoolean("reserve")).thenReturn(reserve);
 
-        Message m = MessageFactory.fromJson(jsonObjectMock);
+        Message m = SoftwarePicoMessageFactory.fromJson(jsonObjectMock);
 
         assertInstanceOf(ReservationMessage.class, m);
         assertEquals(reserve, ((ReservationMessage) m).reserve());

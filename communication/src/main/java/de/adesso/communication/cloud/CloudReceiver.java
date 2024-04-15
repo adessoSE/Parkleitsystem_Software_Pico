@@ -1,7 +1,7 @@
 package de.adesso.communication.cloud;
 
 
-import de.adesso.communication.Receiver;
+import de.adesso.communication.messaging.Receiver;
 
 public interface CloudReceiver extends Receiver {
 

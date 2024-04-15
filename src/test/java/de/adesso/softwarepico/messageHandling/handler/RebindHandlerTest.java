@@ -1,7 +1,7 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
-import de.adesso.softwarepico.messageHandling.MessageType;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
+import de.adesso.communication.messageHandling.Message;
 import de.adesso.softwarepico.messageHandling.message.RebindMessage;
 import de.adesso.softwarepico.service.mirror.MirrorService;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +33,7 @@ class RebindHandlerTest {
 
         Message m = mock(Message.class);
 
-        when(m.getMessageType()).thenReturn(MessageType.REBIND);
+        when(m.getMessageType()).thenReturn(SoftwarePicoMessageType.REBIND);
 
         assertTrue(rebindHandlerToTest.supports(m));
 
@@ -42,8 +42,8 @@ class RebindHandlerTest {
     @Test
     void supportsFalse(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.REBIND)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.REBIND)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 
@@ -70,8 +70,8 @@ class RebindHandlerTest {
     @Test
     void handleUnsupported(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.REBIND)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.REBIND)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 

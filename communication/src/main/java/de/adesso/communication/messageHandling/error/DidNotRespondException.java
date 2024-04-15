@@ -1,4 +1,5 @@
-package de.adesso.communication.hardware.errorHandling;
+package de.adesso.communication.messageHandling.error;
 
 public class DidNotRespondException extends RuntimeException{
+
 }

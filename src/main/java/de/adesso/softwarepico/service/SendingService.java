@@ -1,34 +1,37 @@
 package de.adesso.softwarepico.service;
 
+import de.adesso.communication.messaging.UniversalSender;
 import de.adesso.softwarepico.SoftwarePicoApplication;
-import de.adesso.communication.cloud.CloudSender;
-import de.adesso.communication.hardware.HardwareSender;
 import de.adesso.softwarepico.configuration.LedStatus;
 import jakarta.annotation.PostConstruct;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 
 @Service
 public class SendingService {
-    private final CloudSender cloudSender;
-    private final HardwareSender hardwareSender;
+
+    private final UniversalSender sender;
+    private final CompletableFuture<Void> synchronizer;
 
     @Autowired
-    public SendingService(CloudSender cloudSender, HardwareSender hardwareSender) {
-        this.cloudSender = cloudSender;
-        this.hardwareSender = hardwareSender;
+    public SendingService(UniversalSender sender, CompletableFuture<Void> synchronizer) {
+        this.sender = sender;
+        this.synchronizer = synchronizer;
     }
 
     public void bind(String ip){
         JSONObject bindMessage = new JSONObject().put("messageType", "bind");
-        hardwareSender.send(ip, bindMessage);
+        sender.send(ip, bindMessage);
     }
 
     public void setLed(String ip, LedStatus ledStatus){
         JSONObject setLedMessage = new JSONObject().put("messageType", "setLed").put("status", ledStatus.name());
-        hardwareSender.send(ip, setLedMessage);
+        sender.send(ip, setLedMessage);
     }
 
     public void connectionInfo(int hardwarePicoId, String hardwarePicoIp, String connectionStatus){
@@ -37,26 +40,30 @@ public class SendingService {
                 .put("hardwarePicoUri", hardwarePicoId + "/" + hardwarePicoIp)
                 .put("softwarePicoUri", SoftwarePicoApplication.getUuid())
                 .put("connectionStatus", connectionStatus);
-        cloudSender.send("software-iot-gateway", connectionInfoMessage);
+        sender.send("software-iot-gateway", connectionInfoMessage);
     }
 
     public void ping(String hardwarePicoIp, int important){
         JSONObject pingMessage = new JSONObject().put("messageType", "heartbeat").put("important", important);
-        hardwareSender.send(hardwarePicoIp, pingMessage);
+        sender.send(hardwarePicoIp, pingMessage);
     }
 
     public void sendResponse(String uri, String messageId, String status){
         JSONObject response = new JSONObject().put("messageType", "status_response").put("messageId", messageId).put("status", status);
-        cloudSender.send(uri, response);
+        sender.send(uri, response);
     }
 
     @PostConstruct
     protected void init(){
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         }catch (Exception ignore){}
         JSONObject registerMessage = new JSONObject().put("messageType", "register_sp").put("uri", SoftwarePicoApplication.getUuid());
-        cloudSender.send("software-iot-gateway", registerMessage);
+        synchronizer.thenAccept(v -> sender.send("software-iot-gateway", registerMessage));
+    }
+
+    public void sendToDns(String uri){
+        sender.publishToDns(uri);
     }
 
 

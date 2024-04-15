@@ -1,11 +1,12 @@
 package de.adesso.softwarepico.messageHandling.message;
 
-import de.adesso.softwarepico.messageHandling.MessageType;
+import de.adesso.communication.messageHandling.Message;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
 
 public record SensorInfoMessage(String status) implements Message {
 
     @Override
-    public MessageType getMessageType() {
-        return MessageType.SENSOR_INFO;
+    public String getMessageType() {
+        return SoftwarePicoMessageType.SENSOR_INFO.name();
     }
 }

@@ -1,8 +1,8 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
-import de.adesso.softwarepico.messageHandling.MessageType;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
 import de.adesso.softwarepico.messageHandling.message.InfoMessage;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.communication.messageHandling.Message;
 import de.adesso.softwarepico.service.mirror.MirrorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ class InfoHandlerTest {
 
         Message m = mock(Message.class);
 
-        when(m.getMessageType()).thenReturn(MessageType.INFO);
+        when(m.getMessageType()).thenReturn(SoftwarePicoMessageType.INFO);
 
         assertTrue(infoHandlerToTest.supports(m));
 
@@ -41,8 +41,8 @@ class InfoHandlerTest {
     @Test
     void supportsFalse(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.INFO)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.INFO)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 
@@ -67,8 +67,8 @@ class InfoHandlerTest {
     @Test
     void handleUnsupported(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.INFO)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.INFO)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 

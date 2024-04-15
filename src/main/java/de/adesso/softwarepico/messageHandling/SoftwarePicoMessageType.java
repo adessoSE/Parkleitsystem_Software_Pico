@@ -1,6 +1,6 @@
 package de.adesso.softwarepico.messageHandling;
 
-public enum MessageType {
+public enum SoftwarePicoMessageType {
     BIND,
     REBIND,
     INFO,

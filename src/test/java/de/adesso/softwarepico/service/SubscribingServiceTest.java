@@ -1,10 +1,10 @@
 package de.adesso.softwarepico.service;
 
 import de.adesso.softwarepico.SoftwarePicoApplication;
-import de.adesso.communication.Receiver;
-import de.adesso.softwarepico.messageHandling.MessageFactory;
-import de.adesso.softwarepico.messageHandling.handler.MessageHandler;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.communication.messaging.Receiver;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageFactory;
+import de.adesso.communication.messageHandling.MessageHandler;
+import de.adesso.communication.messageHandling.Message;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,23 +19,23 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class MessageServiceTest {
+class SubscribingServiceTest {
 
     static Receiver receiverMock;
     static List<MessageHandler> messageHandlersMock;
-    static MessageService messageServiceToTest;
+    static SubscribingService subscribingServiceToTest;
 
     @BeforeAll
     @SuppressWarnings("unchecked")
     static void init(){
         receiverMock = mock(Receiver.class);
         messageHandlersMock = (List<MessageHandler>) mock(List.class);
-        messageServiceToTest = spy(new MessageService(receiverMock, messageHandlersMock));
+        subscribingServiceToTest = spy(new SubscribingService(receiverMock, messageHandlersMock));
     }
 
     @BeforeEach
     void resetMocks(){
-        reset(receiverMock, messageHandlersMock, messageServiceToTest);
+        reset(receiverMock, messageHandlersMock, subscribingServiceToTest);
     }
 
     @Test
@@ -47,7 +47,7 @@ class MessageServiceTest {
 
         softwarePicoApplicationMock.when(SoftwarePicoApplication::getUuid).thenReturn(uuid);
 
-        messageServiceToTest.subscribeToInbound();
+        subscribingServiceToTest.subscribeToInbound();
 
         verify(receiverMock, times(1)).subscribe(eq(uuid), any());
         verify(receiverMock, times(1)).subscribe(eq("software-pico"), any());
@@ -62,7 +62,7 @@ class MessageServiceTest {
         when(messageHandlersMock.stream()).thenReturn(Stream.of(h));
         when(h.supports(m)).thenReturn(true);
 
-        MessageHandler k = messageServiceToTest.findSupportingMessageHandler(m);
+        MessageHandler k = subscribingServiceToTest.findSupportingMessageHandler(m);
 
         assertEquals(h, k);
     }
@@ -74,7 +74,7 @@ class MessageServiceTest {
 
         when(messageHandlersMock.stream()).thenReturn(Stream.empty());
 
-        assertThrows(NoSuchElementException.class, () -> messageServiceToTest.findSupportingMessageHandler(m));
+        assertThrows(NoSuchElementException.class, () -> subscribingServiceToTest.findSupportingMessageHandler(m));
     }
 
     @Test
@@ -83,13 +83,13 @@ class MessageServiceTest {
         Message m = mock(Message.class);
         MessageHandler h = mock(MessageHandler.class);
 
-        MockedStatic<MessageFactory> messageFactoryMock = mockStatic(MessageFactory.class);
-        messageFactoryMock.when(() -> MessageFactory.fromJson(any())).thenReturn(m);
+        MockedStatic<SoftwarePicoMessageFactory> messageFactoryMock = mockStatic(SoftwarePicoMessageFactory.class);
+        messageFactoryMock.when(() -> SoftwarePicoMessageFactory.fromJson(any())).thenReturn(m);
 
-        doReturn(h).when(messageServiceToTest).findSupportingMessageHandler(m);
+        doReturn(h).when(subscribingServiceToTest).findSupportingMessageHandler(m);
 
 
-        messageServiceToTest.handle(new JSONObject());
+        subscribingServiceToTest.handle(new JSONObject());
 
         verify(h, times(1)).handle(m);
 
@@ -101,10 +101,10 @@ class MessageServiceTest {
 
         JSONObject jsonMessage = new JSONObject();
 
-        MockedStatic<MessageFactory> messageFactoryMock = mockStatic(MessageFactory.class);
-        messageFactoryMock.when(() -> MessageFactory.fromJson(any())).thenThrow(new IllegalArgumentException());
+        MockedStatic<SoftwarePicoMessageFactory> messageFactoryMock = mockStatic(SoftwarePicoMessageFactory.class);
+        messageFactoryMock.when(() -> SoftwarePicoMessageFactory.fromJson(any())).thenThrow(new IllegalArgumentException());
 
-        assertThrows(IllegalArgumentException.class, () -> messageServiceToTest.handle(jsonMessage));
+        assertThrows(IllegalArgumentException.class, () -> subscribingServiceToTest.handle(jsonMessage));
 
         messageFactoryMock.close();
     }

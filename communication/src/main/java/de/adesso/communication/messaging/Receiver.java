@@ -1,4 +1,4 @@
-package de.adesso.communication;
+package de.adesso.communication.messaging;
 
 import org.json.JSONObject;
 

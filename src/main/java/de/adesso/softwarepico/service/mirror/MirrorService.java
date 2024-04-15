@@ -1,6 +1,6 @@
 package de.adesso.softwarepico.service.mirror;
 
-import de.adesso.communication.hardware.errorHandling.DidNotRespondException;
+import de.adesso.communication.messageHandling.error.DidNotRespondException;
 import de.adesso.softwarepico.configuration.SensorStatus;
 import de.adesso.softwarepico.service.SendingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,7 @@ public class MirrorService {
     public void initialize(int hardwarePicoId, String hardwarePicoIp){
         softwareRepresentation.initialize(hardwarePicoId, hardwarePicoIp);
         sendingService.bind(hardwarePicoIp);
+        sendingService.sendToDns("software-pico/" + hardwarePicoId);
     }
 
     public void rebind(String hardwarePicoIp){

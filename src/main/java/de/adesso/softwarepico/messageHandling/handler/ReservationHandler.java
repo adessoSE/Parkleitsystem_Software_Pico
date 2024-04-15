@@ -1,14 +1,15 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
+import de.adesso.communication.messageHandling.MessageHandler;
 import de.adesso.softwarepico.service.mirror.MirrorService;
-import de.adesso.softwarepico.messageHandling.MessageType;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
+import de.adesso.communication.messageHandling.Message;
 import de.adesso.softwarepico.messageHandling.message.ReservationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReservationHandler implements MessageHandler{
+public class ReservationHandler implements MessageHandler {
 
     private final MirrorService mirrorService;
 
@@ -27,6 +28,6 @@ public class ReservationHandler implements MessageHandler{
 
     @Override
     public <T extends Message> boolean supports(T message) {
-        return message.getMessageType().equals(MessageType.RESERVE);
+        return message.getMessageType().equals(SoftwarePicoMessageType.RESERVE.name());
     }
 }

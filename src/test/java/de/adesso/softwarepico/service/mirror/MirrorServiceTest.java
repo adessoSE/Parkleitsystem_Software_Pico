@@ -1,6 +1,6 @@
 package de.adesso.softwarepico.service.mirror;
 
-import de.adesso.communication.hardware.errorHandling.DidNotRespondException;
+import de.adesso.communication.messageHandling.error.DidNotRespondException;
 import de.adesso.softwarepico.configuration.LedStatus;
 import de.adesso.softwarepico.configuration.SensorStatus;
 import de.adesso.softwarepico.service.SendingService;

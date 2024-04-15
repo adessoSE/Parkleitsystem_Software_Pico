@@ -1,15 +1,16 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
+import de.adesso.communication.messageHandling.MessageHandler;
 import de.adesso.softwarepico.service.mirror.MirrorService;
 import de.adesso.softwarepico.configuration.SensorStatus;
-import de.adesso.softwarepico.messageHandling.MessageType;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
+import de.adesso.communication.messageHandling.Message;
 import de.adesso.softwarepico.messageHandling.message.SensorInfoMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SensorInfoHandler implements MessageHandler{
+public class SensorInfoHandler implements MessageHandler {
 
     private final MirrorService mirrorService;
 
@@ -28,6 +29,6 @@ public class SensorInfoHandler implements MessageHandler{
 
     @Override
     public <T extends Message> boolean supports(T message) {
-        return message.getMessageType().equals(MessageType.SENSOR_INFO);
+        return message.getMessageType().equals(SoftwarePicoMessageType.SENSOR_INFO.name());
     }
 }

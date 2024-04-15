@@ -1,7 +1,7 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
-import de.adesso.softwarepico.messageHandling.MessageType;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
+import de.adesso.communication.messageHandling.Message;
 import de.adesso.softwarepico.messageHandling.message.ReservationMessage;
 import de.adesso.softwarepico.service.mirror.MirrorService;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +34,7 @@ class ReservationHandlerTest {
 
         Message m = mock(Message.class);
 
-        when(m.getMessageType()).thenReturn(MessageType.RESERVE);
+        when(m.getMessageType()).thenReturn(SoftwarePicoMessageType.RESERVE);
 
         assertTrue(reservationHandlerToTest.supports(m));
 
@@ -43,8 +43,8 @@ class ReservationHandlerTest {
     @Test
     void supportsFalse(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.RESERVE)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.RESERVE)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 
@@ -70,8 +70,8 @@ class ReservationHandlerTest {
     @Test
     void handleUnsupported(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.RESERVE)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.RESERVE)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 

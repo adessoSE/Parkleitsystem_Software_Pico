@@ -1,6 +1,6 @@
 package de.adesso.communication.hardware;
 
-import de.adesso.communication.hardware.errorHandling.DidNotRespondException;
+import de.adesso.communication.messageHandling.error.DidNotRespondException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +32,7 @@ public class HttpSender implements HardwareSender{
         }
         catch (HttpServerErrorException e){
             if(j.getString("messageType").equals("heartbeat") && j.getInt("important") == 1){
+                logger.warn("[Lost connection to Hardware-Pico]");
                 throw new DidNotRespondException();
             }
         }

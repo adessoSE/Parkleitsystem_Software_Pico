@@ -1,8 +1,8 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
-import de.adesso.softwarepico.messageHandling.MessageType;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
 import de.adesso.softwarepico.messageHandling.message.BindMessage;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.communication.messageHandling.Message;
 import de.adesso.softwarepico.service.mirror.MirrorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ class BindHandlerTest {
 
         Message m = mock(Message.class);
 
-        when(m.getMessageType()).thenReturn(MessageType.BIND);
+        when(m.getMessageType()).thenReturn(SoftwarePicoMessageType.BIND);
 
         assertTrue(bindHandlerToTest.supports(m));
 
@@ -41,8 +41,8 @@ class BindHandlerTest {
     @Test
     void supportsFalse(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.BIND)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.BIND)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 
@@ -70,8 +70,8 @@ class BindHandlerTest {
     @Test
     void handleUnsupported(){
 
-        for(MessageType mt : MessageType.values()){
-            if(!mt.equals(MessageType.BIND)){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
+            if(!mt.equals(SoftwarePicoMessageType.BIND)){
                 Message m = mock(Message.class);
                 when(m.getMessageType()).thenReturn(mt);
 

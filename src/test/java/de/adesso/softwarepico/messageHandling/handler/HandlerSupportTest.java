@@ -1,7 +1,8 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
-import de.adesso.softwarepico.messageHandling.MessageType;
-import de.adesso.softwarepico.messageHandling.message.Message;
+import de.adesso.communication.messageHandling.MessageHandler;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
+import de.adesso.communication.messageHandling.Message;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,7 @@ public class HandlerSupportTest {
 
     @Test
     void allTypesSupported(){
-        for(MessageType mt : MessageType.values()){
+        for(SoftwarePicoMessageType mt : SoftwarePicoMessageType.values()){
             Message m = () -> mt;
             boolean supported = false;
             for(MessageHandler h : messageHandlers){

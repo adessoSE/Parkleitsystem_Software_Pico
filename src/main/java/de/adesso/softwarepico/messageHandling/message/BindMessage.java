@@ -1,11 +1,12 @@
 package de.adesso.softwarepico.messageHandling.message;
 
-import de.adesso.softwarepico.messageHandling.MessageType;
+import de.adesso.communication.messageHandling.Message;
+import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
 
 public record BindMessage(int hardwarePicoId, String hardwarePicoIp) implements Message {
 
     @Override
-    public MessageType getMessageType() {
-        return MessageType.BIND;
+    public String getMessageType() {
+        return SoftwarePicoMessageType.BIND.name();
     }
 }
