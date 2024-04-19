@@ -1,61 +1,57 @@
 package de.adesso.communication.messaging;
 
 import de.adesso.communication.addressResolution.DnsService;
-import de.adesso.communication.cloud.CloudSender;
-import de.adesso.communication.hardware.HardwareSender;
-import de.adesso.communication.messageHandling.error.DidNotRespondException;
-import de.adesso.communication.messageHandling.error.MessageErrorHandler;
+import de.adesso.communication.messageHandling.answerChecking.Answer;
+import de.adesso.communication.messageHandling.answerChecking.AnswerCheckingService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class UniversalSender implements Sender{
+public class UniversalSender{
     private final DnsService dnsService;
+    private final AnswerCheckingService answerCheckingService;
     private final String uuid;
-    private final List<CloudSender> cloudSenders;
-    private final List<HardwareSender> hardwareSenders;
-    private final List<MessageErrorHandler> messageErrorHandlers;
+    private final List<Sender> senders;
 
     @Autowired
-    public UniversalSender(DnsService dnsService, String uuid, List<CloudSender> cloudSenders, List<HardwareSender> hardwareSenders, @Lazy List<MessageErrorHandler> messageErrorHandlers) {
+    public UniversalSender(DnsService dnsService, AnswerCheckingService answerCheckingService, String uuid, List<Sender> senders) {
         this.dnsService = dnsService;
+        this.answerCheckingService = answerCheckingService;
         this.uuid = uuid;
-        this.cloudSenders = cloudSenders;
-        this.hardwareSenders = hardwareSenders;
-        this.messageErrorHandlers = messageErrorHandlers;
+        this.senders = senders;
     }
 
-    @Override
     public void send(String uri, JSONObject j) {
         CompletableFuture<String> c = dnsService.getTopicForService(uri);
         c.thenAccept(domainAndAddress -> {
-            try {
-                sendToDomain(domainAndAddress, j);
-            }
-            catch(DidNotRespondException e){
-                messageErrorHandlers.stream().filter(messageErrorHandler -> messageErrorHandler.supports(e)).findFirst().ifPresent(messageErrorHandler -> messageErrorHandler.handle(e));
-            }
+            sendToDomain(domainAndAddress, j);
         });
+    }
+
+    public void sendExpectAnswer(String uri, JSONObject j){
+        UUID requestId = answerCheckingService.addPendingAnswer(uri, j);
+        j.put("context", true);
+        j.put("requestId", requestId.toString());
+        send(uri, j);
+    }
+
+    public void sendExpectAnswer(String uri, JSONObject j, Long timeoutMillis){
+        UUID requestId = answerCheckingService.addPendingAnswer(new Answer(uri, j, timeoutMillis));
+        j.put("context", false);
+        j.put("source", uuid);
+        j.put("requestId", requestId.toString());
+        send(uri, j);
     }
 
     protected void sendToDomain(String domainAndAddress, JSONObject jsonMessage){
         String domain = domainAndAddress.split("/")[0];
         String address = domainAndAddress.split("/")[1];
-        if(domain.equals("ip")){
-            for(HardwareSender hardwareSender : hardwareSenders){
-                hardwareSender.send(address, jsonMessage);
-            }
-        }
-        else if(domain.equals("mqtt")){
-            for (CloudSender cloudSender : cloudSenders){
-                cloudSender.send(address, jsonMessage);
-            }
-        }
+        Sender sender = senders.stream().filter(s -> s.supports(domain)).findFirst().orElseThrow();
+        sender.send(address, jsonMessage);
     }
 
     public void publishToDns(String service){
@@ -63,9 +59,12 @@ public class UniversalSender implements Sender{
                 .put("messageType", "dns_publish")
                 .put("service", service)
                 .put("topic", uuid);
-        for(CloudSender cloudSender : cloudSenders){
-            cloudSender.send("cloud-dns", dnsPublishMessage);
-        }
+        Sender sender = senders.stream().filter(s -> s.supports("mqtt")).findFirst().orElseThrow();
+        sender.send("cloud-dns", dnsPublishMessage);
+    }
+
+    public void clearDnsCache(){
+        dnsService.clearDnsCache();
     }
 
 }

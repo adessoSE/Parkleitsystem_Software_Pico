@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static de.adesso.softwarepico.configuration.HardwarePicoUtils.hpIdFromUri;
 import static de.adesso.softwarepico.configuration.HardwarePicoUtils.hpIpFromUri;
@@ -41,8 +42,8 @@ public class SoftwarePicoMessageFactory implements MessageFactory {
             }
             case GET_STATUS -> {
                 String sourceTopic = jsonMessage.getString("source");
-                String messageId = jsonMessage.getString("messageId");
-                yield new GetStatusMessage(sourceTopic, messageId);
+                String messageId = jsonMessage.getString("requestId");
+                yield new GetStatusMessage(UUID.fromString(messageId), sourceTopic);
             }
             case RESERVE -> {
                 boolean reserve = jsonMessage.getBoolean("reserve");

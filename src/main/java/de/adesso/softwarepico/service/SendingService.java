@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -25,12 +27,12 @@ public class SendingService {
     }
 
     public void bind(String ip){
-        JSONObject bindMessage = new JSONObject().put("messageType", "bind");
+        JSONObject bindMessage = new JSONObject().put("messageType", "bind").put("uri", SoftwarePicoApplication.getUuid());
         sender.send(ip, bindMessage);
     }
 
     public void setLed(String ip, LedStatus ledStatus){
-        JSONObject setLedMessage = new JSONObject().put("messageType", "setLed").put("status", ledStatus.name());
+        JSONObject setLedMessage = new JSONObject().put("messageType", "set_led").put("status", ledStatus.name());
         sender.send(ip, setLedMessage);
     }
 
@@ -45,12 +47,7 @@ public class SendingService {
 
     public void ping(String hardwarePicoIp, int important){
         JSONObject pingMessage = new JSONObject().put("messageType", "heartbeat").put("important", important);
-        sender.send(hardwarePicoIp, pingMessage);
-    }
-
-    public void sendResponse(String uri, String messageId, String status){
-        JSONObject response = new JSONObject().put("messageType", "status_response").put("messageId", messageId).put("status", status);
-        sender.send(uri, response);
+        sender.sendExpectAnswer(hardwarePicoIp, pingMessage, Duration.of(5, ChronoUnit.SECONDS).toMillis());
     }
 
     @PostConstruct

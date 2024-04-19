@@ -1,12 +1,20 @@
 package de.adesso.softwarepico.messageHandling.message;
 
-import de.adesso.communication.messageHandling.Message;
+import de.adesso.communication.messageHandling.message.RequestMessage;
 import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
 
-public record GetStatusMessage(String sourceTopic, String messageId) implements Message {
+import java.util.UUID;
+
+public class GetStatusMessage extends RequestMessage {
+
+
+    public GetStatusMessage(UUID requestId, String source) {
+        super(requestId, source);
+    }
 
     @Override
     public String getMessageType() {
         return SoftwarePicoMessageType.GET_STATUS.name();
     }
+
 }

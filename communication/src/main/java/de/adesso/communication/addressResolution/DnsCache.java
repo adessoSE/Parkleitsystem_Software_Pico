@@ -33,6 +33,10 @@ public class DnsCache {
         return false;
     }
 
+    public void clearCache(){
+        dnsCacheMap.clear();
+    }
+
     public String getAddress(String service){
         if(hasEntryFor(service)){
             return dnsCacheMap.get(service);
@@ -45,7 +49,7 @@ public class DnsCache {
         timesToLive.put(service, LocalDateTime.now());
     }
 
-    @Scheduled(fixedRate = 20000L)
+    @Scheduled(fixedRate = 900000L)
     protected void checkTimesToLive(){
         for(String s : dnsCacheMap.keySet()){
             if(timesToLive.get(s).plusMinutes(1).isBefore(LocalDateTime.now())){

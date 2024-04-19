@@ -1,4 +1,4 @@
-package de.adesso.communication.cloud;
+package de.adesso.communication.mqtt;
 
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;

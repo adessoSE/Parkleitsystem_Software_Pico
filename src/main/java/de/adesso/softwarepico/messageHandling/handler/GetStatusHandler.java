@@ -1,34 +1,29 @@
 package de.adesso.softwarepico.messageHandling.handler;
 
-import de.adesso.communication.messageHandling.MessageHandler;
+import de.adesso.communication.messageHandling.handler.RequestMessageHandler;
+import de.adesso.communication.messaging.UniversalSender;
 import de.adesso.softwarepico.service.mirror.MirrorService;
-import de.adesso.softwarepico.service.SendingService;
 import de.adesso.softwarepico.messageHandling.SoftwarePicoMessageType;
-import de.adesso.softwarepico.messageHandling.message.GetStatusMessage;
 import de.adesso.communication.messageHandling.Message;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetStatusHandler implements MessageHandler {
+public class GetStatusHandler extends RequestMessageHandler {
 
     private final MirrorService mirrorService;
-    private final SendingService sendingService;
 
     @Autowired
-    public GetStatusHandler(MirrorService mirrorService, SendingService sendingService) {
+    public GetStatusHandler(MirrorService mirrorService, UniversalSender universalSender) {
+        super(universalSender);
         this.mirrorService = mirrorService;
-        this.sendingService = sendingService;
     }
 
-
     @Override
-    public <T extends Message> void handle(T message) {
-        if(supports(message)){
-            GetStatusMessage getStatusMessage = (GetStatusMessage) message;
-            String status = mirrorService.getSensorStatus().name();
-            sendingService.sendResponse(getStatusMessage.sourceTopic(), getStatusMessage.messageId(), status);
-        }
+    protected <T extends Message> JSONObject buildResponseMessage(T message) {
+        String status = mirrorService.getSensorStatus().name();
+        return new JSONObject().put("messageType", "status_response").put("status", status);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package de.adesso.communication.messageHandling.handler;
 
-import de.adesso.communication.messageHandling.Message;
 import de.adesso.communication.messageHandling.MessageHandler;
+import de.adesso.communication.messageHandling.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

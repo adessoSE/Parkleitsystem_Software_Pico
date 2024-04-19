@@ -1,7 +1,7 @@
 package de.adesso.softwarepico.service;
 
 import de.adesso.softwarepico.SoftwarePicoApplication;
-import de.adesso.communication.cloud.CloudSender;
+import de.adesso.communication.mqtt.CloudSender;
 import de.adesso.communication.hardware.HardwareSender;
 import de.adesso.softwarepico.configuration.LedStatus;
 import org.json.JSONObject;

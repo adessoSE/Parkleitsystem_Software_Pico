@@ -1,36 +1,42 @@
 package de.adesso.communication.messageHandling;
 
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import de.adesso.communication.messageHandling.error.JsonMessageNotSupportedException;
+import de.adesso.communication.messageHandling.error.AnswerAfterTimeoutException;
+import de.adesso.communication.messageHandling.answerChecking.Answer;
+import de.adesso.communication.messageHandling.answerChecking.AnswerCheckingService;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MessageService {
 
     private final List<MessageHandler> messageHandlers;
     private final List<MessageFactory> messageFactories;
-    private final Logger logger = LoggerFactory.getLogger(MessageService.class);
+    private final List<MessageErrorHandler> messageErrorHandlers;
+    private final AnswerCheckingService answerCheckingService;
 
     @Autowired
-    public MessageService(List<MessageHandler> messageHandlers, List<MessageFactory> messageFactories) {
+    public MessageService(List<MessageHandler> messageHandlers, List<MessageFactory> messageFactories, List<MessageErrorHandler> messageErrorHandlers, AnswerCheckingService answerCheckingService) {
         this.messageHandlers = messageHandlers;
         this.messageFactories = messageFactories;
+        this.messageErrorHandlers = messageErrorHandlers;
+        this.answerCheckingService = answerCheckingService;
     }
 
     public void handle(JSONObject jsonMessage){
         try {
+            checkPendingAnswers(jsonMessage);
             MessageFactory messageFactory = findSupportingMessageFactory(jsonMessage);
             Message message = messageFactory.fromJson(jsonMessage);
             handle(message);
         }
-        catch (JsonMessageNotSupportedException e){
-            logger.warn("[Failed to build Message for " + e.getFailedMessage() + "]");
+        catch (Exception e){
+            MessageErrorHandler errorHandler = findSupportingMessageErrorHandler(e);
+            errorHandler.handle(e);
         }
 
     }
@@ -48,5 +54,19 @@ public class MessageService {
     protected MessageHandler findSupportingMessageHandler(Message message){
         return messageHandlers.stream().filter(messageHandler -> messageHandler.supports(message) && !messageHandler.isDefault()).findFirst()
                 .orElse(messageHandlers.stream().filter(messageHandler -> messageHandler.supports(message)).findFirst().orElseThrow());
+    }
+
+    protected MessageErrorHandler findSupportingMessageErrorHandler(Exception e){
+        return messageErrorHandlers.stream().filter(messageErrorHandler -> messageErrorHandler.supports(e) && !messageErrorHandler.isDefault()).findFirst()
+                .orElse(messageErrorHandlers.stream().filter(messageErrorHandler -> messageErrorHandler.supports(e)).findFirst().orElseThrow());
+    }
+
+    protected void checkPendingAnswers(JSONObject jsonMessage) throws AnswerAfterTimeoutException{
+        if(jsonMessage.has("context") && jsonMessage.getBoolean("context")){
+            UUID responseId = UUID.fromString(jsonMessage.getString("responseId"));
+            Answer answer = answerCheckingService.getAnswer(responseId);
+            if(answer.getSendTime().plus(answer.getTimeout()).isBefore(LocalDateTime.now())) throw new AnswerAfterTimeoutException(answer);
+            answerCheckingService.setFulfilled(responseId);
+        }
     }
 }

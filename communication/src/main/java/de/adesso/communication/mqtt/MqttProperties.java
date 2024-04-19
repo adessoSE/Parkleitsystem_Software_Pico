@@ -1,4 +1,4 @@
-package de.adesso.communication.cloud;
+package de.adesso.communication.mqtt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

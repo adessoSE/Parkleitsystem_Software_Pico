@@ -1,7 +1,8 @@
-package de.adesso.communication.cloud;
+package de.adesso.communication.mqtt;
 
 import com.hivemq.client.mqtt.datatypes.MqttQos;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5AsyncClient;
+import de.adesso.communication.messaging.Receiver;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.Consumer;
 
 @Service
-public class MqttReceiver implements CloudReceiver{
+public class MqttReceiver implements Receiver {
 
     private final Mqtt5AsyncClient mqttClient;
 

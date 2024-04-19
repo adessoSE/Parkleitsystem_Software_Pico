@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Service
-public class UniversalReceiver implements Receiver {
+public class UniversalReceiver {
 
     private final List<Receiver> receivers;
     private final MessageService messageService;
@@ -25,12 +25,5 @@ public class UniversalReceiver implements Receiver {
        for(Receiver r : receivers){
            r.subscribe(uri, messageService::handle);
        }
-    }
-
-    @Override
-    public void subscribe(String uri, Consumer<JSONObject> jsonConsumer) {
-        for(Receiver r : receivers){
-            r.subscribe(uri, jsonConsumer);
-        }
     }
 }

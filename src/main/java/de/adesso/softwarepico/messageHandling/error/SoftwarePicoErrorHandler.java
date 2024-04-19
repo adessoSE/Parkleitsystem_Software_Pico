@@ -1,7 +1,7 @@
 package de.adesso.softwarepico.messageHandling.error;
 
 import de.adesso.communication.messageHandling.error.DidNotRespondException;
-import de.adesso.communication.messageHandling.error.MessageErrorHandler;
+import de.adesso.communication.messageHandling.MessageErrorHandler;
 import de.adesso.softwarepico.service.mirror.MirrorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,10 @@ public class SoftwarePicoErrorHandler implements MessageErrorHandler {
     @Override
     public void handle(Exception e) {
         if(supports(e)){
-            mirrorService.setConnectionStatus("LOST");
+            DidNotRespondException d = (DidNotRespondException) e;
+            if(d.getExpected().getJsonMessage().has("important") && d.getExpected().getJsonMessage().getInt("important") == 1) {
+                mirrorService.setConnectionStatus("LOST");
+            }
         }
     }
 }
